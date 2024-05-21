@@ -66,8 +66,9 @@ const {
 	rerunCacheName,
 	size
 } = argv;
-const { ntl, scripts } = getCwdPackage() || {};
-const runner = (ntl && ntl.runner) || process.env.NTL_RUNNER || defaultRunner;
+const { ntl, scripts, packageManager = '' } = getCwdPackage() || {};
+const [corepackRunner] = packageManager.split('@')
+const runner = (ntl && ntl.runner) || process.env.NTL_RUNNER || corepackRunner || defaultRunner;
 const { descriptions = {} } = ntl || {};
 const scriptKeys = Object.keys(scripts || {});
 const noScriptsFound = !scripts || scriptKeys.length < 1;
@@ -225,14 +226,14 @@ function run() {
 			name:
 				argv.info || argv.descriptions
 					? getLongName(
-							key,
-							argv.descriptions && descriptions[key]
-								? descriptions[key]
-								: scripts[key]
-					  )
+						key,
+						argv.descriptions && descriptions[key]
+							? descriptions[key]
+							: scripts[key]
+					)
 					: hasDescriptions
-					? getLongName(key, descriptions[key])
-					: key,
+						? getLongName(key, descriptions[key])
+						: key,
 			value: key
 		}))
 		.filter(
@@ -255,9 +256,8 @@ function run() {
 				)
 		);
 
-	const message = `Select a task to run${
-		runner !== defaultRunner ? ` (using ${runner})` : ""
-	}:`;
+	const message = `Select a task to run${runner !== defaultRunner ? ` (using ${runner})` : ""
+		}:`;
 
 	if (hasCachedTasks()) {
 		return;
