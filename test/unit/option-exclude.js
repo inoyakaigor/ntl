@@ -1,15 +1,14 @@
 "use strict";
 
-const { Passthrough } = require("minipass");
-const { test } = require("tap");
-const requireInject = require("require-inject");
-const { mockYargs } = require("./helpers");
+import { test } from "tap"
+import esmock from "esmock"
+import { mockYargs } from "./helpers.js"
 
-test("build a list using --exclude option", t => {
+test("build a list using --exclude option", async t => {
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: 'echo "build"',
 					test: 'echo "test"'
@@ -17,7 +16,7 @@ test("build a list using --exclude option", t => {
 			})
 		},
 		ipt: expected => {
-			t.deepEqual(
+			t.same(
 				expected,
 				[
 					{
@@ -41,11 +40,11 @@ test("build a list using --exclude option", t => {
 	});
 });
 
-test("build a list using --exclude option using *", t => {
+test("build a list using --exclude option using *", async t => {
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: 'echo "build"',
 					test: 'echo "test"',
@@ -55,7 +54,7 @@ test("build a list using --exclude option using *", t => {
 			})
 		},
 		ipt: expected => {
-			t.deepEqual(
+			t.same(
 				expected,
 				[
 					{

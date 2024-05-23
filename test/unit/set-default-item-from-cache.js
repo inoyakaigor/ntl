@@ -1,9 +1,9 @@
 "use strict";
 
-const os = require("os");
-const { test } = require("tap");
-const requireInject = require("require-inject");
-const { mockYargs } = require("./helpers");
+import os from "os"
+import { test } from "tap"
+import esmock from "esmock"
+import { mockYargs } from "./helpers.js"
 
 function setup(t, env) {
 	const _env = process.env;
@@ -19,12 +19,12 @@ function setup(t, env) {
 	});
 }
 
-test("set default option on list", t => {
+test("set default option on list", async t => {
 	setup(t);
 	t.plan(2);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -40,7 +40,7 @@ test("set default option on list", t => {
 			execSync: () => null
 		},
 		ipt: (expected, opts) => {
-			t.deepEqual(
+			t.same(
 				expected,
 				[
 					{
@@ -54,7 +54,7 @@ test("set default option on list", t => {
 				],
 				"should build a regular interface"
 			);
-			t.deepEqual(
+			t.same(
 				opts,
 				{
 					autocomplete: undefined,
@@ -80,12 +80,12 @@ test("set default option on list", t => {
 	});
 });
 
-test("set multiple default options", t => {
+test("set multiple default options", async t => {
 	setup(t);
 	t.plan(2);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -101,7 +101,7 @@ test("set multiple default options", t => {
 			execSync: () => null
 		},
 		ipt: (expected, opts) => {
-			t.deepEqual(
+			t.same(
 				expected,
 				[
 					{
@@ -115,7 +115,7 @@ test("set multiple default options", t => {
 				],
 				"should build a regular interface"
 			);
-			t.deepEqual(
+			t.same(
 				opts,
 				{
 					autocomplete: undefined,

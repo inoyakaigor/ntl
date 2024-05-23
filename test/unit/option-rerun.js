@@ -1,15 +1,15 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
-const { mockYargs } = require("./helpers");
+import { test } from "tap"
+import esmock from "esmock"
+import { mockYargs } from "./helpers.js"
 
 function setup(t, env) {
 	const _env = process.env;
 	delete process.env.NTL_NO_RERUN_CACHE;
 
 	// avoid listeners warning
-	process.stdin.setMaxListeners(13);
+	process.stdin.setMaxListeners(15);
 
 	process.env = {
 		...process.env,
@@ -21,11 +21,11 @@ function setup(t, env) {
 	});
 }
 
-test("skip build interface using --rerun option", t => {
+test("skip build interface using --rerun option", async t => {
 	setup(t);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -62,13 +62,13 @@ test("skip build interface using --rerun option", t => {
 	});
 });
 
-test("skip build interface using NTL_RERUN env variable", t => {
+test("skip build interface using NTL_RERUN env variable", async t => {
 	setup(t, {
 		NTL_RERUN: "true"
 	});
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -104,12 +104,12 @@ test("skip build interface using NTL_RERUN env variable", t => {
 	});
 });
 
-test("no previous command using --rerun option", t => {
+test("no previous command using --rerun option", async t => {
 	setup(t);
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					test: "make test",
 					build: "make build"
@@ -117,13 +117,13 @@ test("no previous command using --rerun option", t => {
 			})
 		},
 		"lru-cache-fs": class {
-			set() {}
+			set() { }
 			get() {
 				return [];
 			}
 		},
 		ipt: expected => {
-			t.deepEqual(
+			t.same(
 				expected,
 				[
 					{
@@ -151,12 +151,12 @@ test("no previous command using --rerun option", t => {
 	});
 });
 
-test("fails on storing command", t => {
+test("fails on storing command", async t => {
 	setup(t);
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					test: "make test",
 					build: "make build"
@@ -168,7 +168,7 @@ test("fails on storing command", t => {
 				t.ok("should access 'lru-cache-fs'.set command");
 				throw new Error("ERR");
 			}
-			get() {}
+			get() { }
 		},
 		ipt: expected => {
 			return Promise.resolve([]);
@@ -189,12 +189,12 @@ test("fails on storing command", t => {
 	});
 });
 
-test("fails on retrieving commands", t => {
+test("fails on retrieving commands", async t => {
 	setup(t);
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					test: "make test",
 					build: "make build"
@@ -202,7 +202,7 @@ test("fails on retrieving commands", t => {
 			})
 		},
 		"lru-cache-fs": class {
-			set() {}
+			set() { }
 			get() {
 				throw new Error("ERR");
 			}
@@ -227,12 +227,12 @@ test("fails on retrieving commands", t => {
 	});
 });
 
-test("rerun multiple cached tasks", t => {
+test("rerun multiple cached tasks", async t => {
 	setup(t);
 	t.plan(2);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -264,14 +264,14 @@ test("rerun multiple cached tasks", t => {
 	});
 });
 
-test("use custom NTL_RERUN_CACHE_DIR option", t => {
+test("use custom NTL_RERUN_CACHE_DIR option", async t => {
 	setup(t, {
 		NTL_RERUN_CACHE_DIR: "/lorem"
 	});
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -303,14 +303,14 @@ test("use custom NTL_RERUN_CACHE_DIR option", t => {
 	});
 });
 
-test("use custom NTL_RERUN_CACHE_NAME option", t => {
+test("use custom NTL_RERUN_CACHE_NAME option", async t => {
 	setup(t, {
 		NTL_RERUN_CACHE_NAME: "cache"
 	});
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -342,14 +342,14 @@ test("use custom NTL_RERUN_CACHE_NAME option", t => {
 	});
 });
 
-test("use custom NTL_RERUN_CACHE_MAX option", t => {
+test("use custom NTL_RERUN_CACHE_MAX option", async t => {
 	setup(t, {
 		NTL_RERUN_CACHE_MAX: 3
 	});
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -377,14 +377,14 @@ test("use custom NTL_RERUN_CACHE_MAX option", t => {
 	});
 });
 
-test("use string NTL_RERUN_CACHE_MAX option", t => {
+test("use string NTL_RERUN_CACHE_MAX option", async t => {
 	setup(t, {
 		NTL_RERUN_CACHE_MAX: "3"
 	});
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -412,14 +412,14 @@ test("use string NTL_RERUN_CACHE_MAX option", t => {
 	});
 });
 
-test("use undefined NTL_RERUN_CACHE_MAX option", t => {
+test("use undefined NTL_RERUN_CACHE_MAX option", async t => {
 	setup(t, {
 		NTL_RERUN_CACHE_MAX: undefined
 	});
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -447,12 +447,12 @@ test("use undefined NTL_RERUN_CACHE_MAX option", t => {
 	});
 });
 
-test("use custom --rerun-cache-dir option", t => {
+test("use custom --rerun-cache-dir option", async t => {
 	setup(t);
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -481,12 +481,12 @@ test("use custom --rerun-cache-dir option", t => {
 	});
 });
 
-test("use custom --rerun-cache-name option", t => {
+test("use custom --rerun-cache-name option", async t => {
 	setup(t);
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -519,12 +519,12 @@ test("use custom --rerun-cache-name option", t => {
 	});
 });
 
-test("--no-rerun-cache option", t => {
+test("--no-rerun-cache option", async t => {
 	setup(t);
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -554,14 +554,14 @@ test("--no-rerun-cache option", t => {
 	});
 });
 
-test("NTL_NO_RERUN_CACHE env variable", t => {
+test("NTL_NO_RERUN_CACHE env variable", async t => {
 	setup(t, {
 		NTL_NO_RERUN_CACHE: "true"
 	});
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"

@@ -1,13 +1,13 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
-const { mockYargs } = require("./helpers");
+import { test } from "tap"
+import esmock from "esmock"
+import { mockYargs } from "./helpers.js"
 
-test("build a list using --descriptions-only option", t => {
-	const ntl = requireInject("../../cli", {
+test("build a list using --descriptions-only option", async t => {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -20,7 +20,7 @@ test("build a list using --descriptions-only option", t => {
 			})
 		},
 		ipt: expected => {
-			t.deepEqual(
+			t.same(
 				expected,
 				[
 					{
@@ -44,10 +44,10 @@ test("build a list using --descriptions-only option", t => {
 	});
 });
 
-test("build a list using --descriptions-only option along with --description", t => {
-	const ntl = requireInject("../../cli", {
+test("build a list using --descriptions-only option along with --description", async t => {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -60,7 +60,7 @@ test("build a list using --descriptions-only option along with --description", t
 			})
 		},
 		ipt: expected => {
-			t.deepEqual(
+			t.same(
 				expected,
 				[
 					{

@@ -1,18 +1,18 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
-const { mockYargs } = require("./helpers");
+import { test } from "tap"
+import esmock from "esmock"
+import { mockYargs } from "./helpers.js"
 
-test("forward an option past -- ", t => {
+test("forward an option past -- ", async t => {
 	const _argv = process.argv;
 	process.argv = process.argv.concat(["--", "--one-more-thing"]);
 	t.teardown(() => {
 		process.argv = _argv;
 	});
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build"
 				}
@@ -38,7 +38,7 @@ test("forward an option past -- ", t => {
 	});
 });
 
-test("forward many options past -- ", t => {
+test("forward many options past -- ", async t => {
 	const _argv = process.argv;
 	process.argv = process.argv.concat([
 		"--",
@@ -50,9 +50,9 @@ test("forward many options past -- ", t => {
 	t.teardown(() => {
 		process.argv = _argv;
 	});
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build"
 				}

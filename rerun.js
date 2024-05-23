@@ -3,4 +3,4 @@
 "use strict";
 
 process.env.NTL_RERUN = true;
-require("./cli.js");
+import "./cli.js"

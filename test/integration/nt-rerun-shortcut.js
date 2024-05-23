@@ -1,7 +1,7 @@
 "use strict";
 
-const { test } = require("tap");
-const { readLastLine, run } = require("./helpers");
+import { test } from "tap"
+import { readLastLine, run } from "./helpers.js"
 
 function setup(t, env) {
 	const _env = process.env;
@@ -37,4 +37,7 @@ test("ntl run and select first item", t => {
 		t.match(readLastLine(res), /build/, "should be able to run task");
 		t.end();
 	});
+
+	cp.stdin.write("\n");
+	cp.stdin.end();
 });

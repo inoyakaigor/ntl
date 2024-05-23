@@ -1,7 +1,11 @@
 "use strict";
 
-const { test } = require("tap");
-const { readLastLine, run } = require("./helpers");
+import { readFile } from 'node:fs/promises'
+import { test } from "tap"
+import { readLastLine, run } from "./helpers.js"
+
+const fileUrl = new URL("../../package.json", import.meta.url)
+const parsedPackageJSON = JSON.parse(await readFile(fileUrl, 'utf8'))
 
 test("ntl run using --version option", t => {
 	const cwd = t.testdir({
@@ -18,7 +22,7 @@ test("ntl run using --version option", t => {
 		const taskOutput = res[0].toString().trim();
 		t.match(
 			taskOutput,
-			require("../../package.json").version,
+			parsedPackageJSON.version,
 			"should match current version of package"
 		);
 		t.end();

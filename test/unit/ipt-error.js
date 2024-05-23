@@ -1,9 +1,9 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
+import { test } from "tap"
+import esmock from "esmock"
 
-test("error while use --debug option", t => {
+test("error while use --debug option", async t => {
 	const _exit = process.exit;
 	process.exit = code => {
 		t.equal(code, 1, "should exit with error signal");
@@ -12,7 +12,7 @@ test("error while use --debug option", t => {
 		process.exit = _exit;
 	});
 	t.plan(2);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		ipt: () => Promise.reject(new Error("ERR")),
 		"simple-output": {
 			node: () => null,

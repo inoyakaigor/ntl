@@ -1,7 +1,7 @@
 "use strict";
 
-const { test } = require("tap");
-const { readLastLine, run } = require("./helpers");
+import { test } from "tap"
+import { readLastLine, run } from "./helpers.js"
 
 test("ntl run but not package.json in current dir", t => {
 	const cwd = t.testdir({

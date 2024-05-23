@@ -1,9 +1,10 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
+import path from "node:path"
+import { test } from "tap"
+import esmock from "esmock"
 
-test("press esc key", t => {
+test("press esc key", async t => {
 	const _exit = process.exit;
 	const _stdin = process.stdin;
 	process.exit = code => {
@@ -13,21 +14,23 @@ test("press esc key", t => {
 	t.teardown(() => {
 		process.exit = _exit;
 	});
-	const ntl = requireInject("../../cli", {
-		ipt: () => Promise.resolve([]),
-		"simple-output": {
-			node: () => null,
-			success: () => null,
-			error: msg => {
-				t.equal(
-					msg,
-					"Error building interactive interface",
-					"should forward original error message"
-				);
-			},
-			info: () => null
-		}
-	});
+	const ntl = await esmock(
+		path.join(path.resolve(import.meta.dirname, "../.."), "cli.js"),
+		{
+			ipt: () => Promise.resolve([]),
+			"simple-output": {
+				node: () => null,
+				success: () => null,
+				error: msg => {
+					t.equal(
+						msg,
+						"Error building interactive interface",
+						"should forward original error message"
+					);
+				},
+				info: () => null
+			}
+		});
 
 	// simulate esc key
 	process.stdin.emit("keypress", "", { name: "escape" });

@@ -1,4 +1,4 @@
-function mockYargs(argv) {
+export function mockYargs(argv) {
 	const yargs = new Proxy(
 		{},
 		{
@@ -13,7 +13,3 @@ function mockYargs(argv) {
 	);
 	return () => yargs;
 }
-
-module.exports = {
-	mockYargs
-};

@@ -1,7 +1,7 @@
 "use strict";
 
-const { test } = require("tap");
-const { readLastLine, run } = require("./helpers");
+import { test } from "tap"
+import { readLastLine, run } from "./helpers.js"
 
 test("ntl run using --multiple option", t => {
 	const cwd = t.testdir({
@@ -17,12 +17,12 @@ test("ntl run using --multiple option", t => {
 	cp.assertNotStderrData(t);
 	cp.getStdoutResult().then(res => {
 		const taskOutput = res.toString().trim();
-		t.contains(
+		t.match(
 			taskOutput,
 			"BUILD TASK",
 			"should be able to run first selected task"
 		);
-		t.contains(
+		t.match(
 			taskOutput,
 			"TEST TASK",
 			"should be able to run last selected task"

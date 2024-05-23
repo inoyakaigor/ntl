@@ -1,12 +1,12 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
+import { test } from "tap"
+import esmock from "esmock"
 
-test("build a simple list of items", t => {
-	const ntl = requireInject("../../cli", {
+test("build a simple list of items", async t => {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					test: "make test",
 					build: "make build"
@@ -14,7 +14,7 @@ test("build a simple list of items", t => {
 			})
 		},
 		ipt: expected => {
-			t.deepEqual(
+			t.same(
 				expected,
 				[
 					{
@@ -38,10 +38,10 @@ test("build a simple list of items", t => {
 	});
 });
 
-test("select one item from the list", t => {
-	const ntl = requireInject("../../cli", {
+test("select one item from the list", async t => {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					test: "make test",
 					build: "make build"

@@ -1,21 +1,21 @@
 "use strict";
 
-const os = require("os");
-const { test } = require("tap");
-const requireInject = require("require-inject");
-const { mockYargs } = require("./helpers");
+import os from "os"
+import { test } from "tap"
+import esmock from "esmock"
+import { mockYargs } from "./helpers.js"
 
-test("build an interface using multiple selectable items", t => {
-	const ntl = requireInject("../../cli", {
+test("build an interface using multiple selectable items", async t => {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					test: "make test"
 				}
 			})
 		},
 		ipt: (items, expected) => {
-			t.deepEqual(
+			t.same(
 				expected,
 				{
 					autocomplete: undefined,
@@ -42,11 +42,11 @@ test("build an interface using multiple selectable items", t => {
 	});
 });
 
-test("run multiple commands", t => {
+test("run multiple commands", async t => {
 	t.plan(2);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"

@@ -1,10 +1,10 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
-const { mockYargs } = require("./helpers");
+import { test } from "tap"
+import esmock from "esmock"
+import { mockYargs } from "./helpers.js"
 
-test("build a list from a specific path", t => {
+test("build a list from a specific path", async t => {
 	const cwd = t.testdir({
 		"package.json": JSON.stringify({
 			scripts: {
@@ -13,9 +13,9 @@ test("build a list from a specific path", t => {
 		})
 	});
 
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		ipt: expected => {
-			t.deepEqual(
+			t.same(
 				expected,
 				[
 					{

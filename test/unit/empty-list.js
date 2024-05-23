@@ -1,15 +1,14 @@
 "use strict";
 
-const { Passthrough } = require("minipass");
-const { test } = require("tap");
-const requireInject = require("require-inject");
-const { mockYargs } = require("./helpers");
+import { test } from "tap"
+import esmock from "esmock"
+import { mockYargs } from "./helpers.js"
 
-test("build a list of items that gets all items filtered out using --descriptions-only", t => {
+test("build a list of items that gets all items filtered out using --descriptions-only", async t => {
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: 'echo "build"',
 					start: 'echo "start"',
@@ -40,11 +39,11 @@ test("build a list of items that gets all items filtered out using --description
 	});
 });
 
-test("build a list of items that gets all items filtered out from --exclude option", t => {
+test("build a list of items that gets all items filtered out from --exclude option", async t => {
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: 'echo "build"',
 					test: 'echo "test"'
@@ -71,11 +70,11 @@ test("build a list of items that gets all items filtered out from --exclude opti
 	});
 });
 
-test("build a list of items that gets items filtered out using --descriptions-only, --excluded and prefixed scripts", t => {
+test("build a list of items that gets items filtered out using --descriptions-only, --excluded and prefixed scripts", async t => {
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: 'echo "build"',
 					pretest: 'echo "pretest"',
@@ -109,11 +108,11 @@ test("build a list of items that gets items filtered out using --descriptions-on
 	});
 });
 
-test("build a list of items that gets all items filtered out as prefixed scripts", t => {
+test("build a list of items that gets all items filtered out as prefixed scripts", async t => {
 	t.plan(1);
-	const ntl = requireInject("../../cli", {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					prebuild: 'echo "prebuild"',
 					pretest: 'echo "pretest"'

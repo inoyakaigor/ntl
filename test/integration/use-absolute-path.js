@@ -1,7 +1,7 @@
 "use strict";
 
-const { test } = require("tap");
-const { readLastLine, run } = require("./helpers");
+import { test } from "tap"
+import { readLastLine, run } from "./helpers.js"
 
 test("ntl run using an absolute path argument", t => {
 	const cwd = t.testdir({
@@ -12,7 +12,7 @@ test("ntl run using an absolute path argument", t => {
 		})
 	});
 
-	const cp = run({ cwd: __dirname }, [cwd]);
+	const cp = run({ cwd: import.meta.dirname }, [cwd]);
 	cp.assertNotStderrData(t);
 	cp.getStdoutResult().then(res => {
 		t.match(readLastLine(res), /build/, "should be able to run task");

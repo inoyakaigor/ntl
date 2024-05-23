@@ -1,13 +1,13 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
-const { mockYargs } = require("./helpers");
+import { test } from "tap"
+import esmock from "esmock"
+import { mockYargs } from "./helpers.js"
 
-test("build a list using default options", t => {
-	const ntl = requireInject("../../cli", {
+test("build a list using default options", async t => {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					"automated:build": "make automated-build",
 					test: "make test"
@@ -20,7 +20,7 @@ test("build a list using default options", t => {
 			})
 		},
 		ipt: expected => {
-			t.deepEqual(
+			t.same(
 				expected,
 				[
 					{
@@ -47,10 +47,10 @@ test("build a list using default options", t => {
 	});
 });
 
-test("build a list in which descriptions key is missing", t => {
-	const ntl = requireInject("../../cli", {
+test("build a list in which descriptions key is missing", async t => {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					"automated:build": "make automated-build",
 					test: "make test"
@@ -63,7 +63,7 @@ test("build a list in which descriptions key is missing", t => {
 			})
 		},
 		ipt: expected => {
-			t.deepEqual(
+			t.same(
 				expected,
 				[
 					{
@@ -90,10 +90,10 @@ test("build a list in which descriptions key is missing", t => {
 	});
 });
 
-test("build a list using --descriptions option", t => {
-	const ntl = requireInject("../../cli", {
+test("build a list using --descriptions option", async t => {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					build: "make build",
 					test: "make test"
@@ -106,7 +106,7 @@ test("build a list using --descriptions option", t => {
 			})
 		},
 		ipt: expected => {
-			t.deepEqual(
+			t.same(
 				expected,
 				[
 					{

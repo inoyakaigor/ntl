@@ -1,13 +1,13 @@
 "use strict";
 
-const { test } = require("tap");
-const requireInject = require("require-inject");
-const { mockYargs } = require("./helpers");
+import { test } from "tap"
+import esmock from "esmock"
+import { mockYargs } from "./helpers.js"
 
-test("build a list withouth using --all option", t => {
-	const ntl = requireInject("../../cli", {
+test("build a list withouth using --all option", async t => {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					prebuild: "make prebuild",
 					build: "make build"
@@ -15,7 +15,7 @@ test("build a list withouth using --all option", t => {
 			})
 		},
 		ipt: expected => {
-			t.deepEqual(
+			t.same(
 				expected,
 				[
 					{
@@ -38,10 +38,10 @@ test("build a list withouth using --all option", t => {
 	});
 });
 
-test("build a list using --all option", t => {
-	const ntl = requireInject("../../cli", {
+test("build a list using --all option", async t => {
+	const ntl = await esmock("../../cli.js", {
 		"read-pkg": {
-			sync: () => ({
+			readPackageSync: () => ({
 				scripts: {
 					prebuild: "make prebuild",
 					build: "make build"
@@ -49,7 +49,7 @@ test("build a list using --all option", t => {
 			})
 		},
 		ipt: expected => {
-			t.deepEqual(
+			t.same(
 				expected,
 				[
 					{

@@ -2,15 +2,15 @@
 
 "use strict";
 
-const os = require("os");
-const path = require("path");
-const { execSync } = require("child_process");
+import os from "os"
+import path from "path"
+import { execSync } from "child_process"
 
-const yargs = require("yargs/yargs");
-const ipt = require("ipt");
-const out = require("simple-output");
-const readPkg = require("read-pkg");
-const Cache = require("lru-cache-fs");
+import yargs from "yargs/yargs"
+import ipt from "ipt"
+import out from "simple-output"
+import { readPackageSync } from "read-pkg"
+import Cache from "lru-cache-fs"
 
 const sep = os.EOL;
 const defaultRunner = "npm";
@@ -113,7 +113,7 @@ function getTrailingOptions() {
 
 function getCwdPackage() {
 	try {
-		return readPkg.sync({ cwd });
+		return readPackageSync({ cwd });
 	} catch (e) {
 		const [errorType] = Object.values(e);
 		error(
