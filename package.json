@@ -13,6 +13,11 @@
       "name": "Michael Kühnel",
       "twitter": "mkuehnel",
       "url": "https://michael-kuehnel.de"
+    },
+    {
+      "name": "Igor «InoY» Zviagintsev",
+      "twitter": "inoyakaigor",
+      "url": "https://inoy.dev"
     }
   ],
   "bin": {
@@ -24,7 +29,7 @@
   },
   "man": "./man/man1/ntl.1",
   "engines": {
-    "node": ">=10"
+    "node": ">=20"
   },
   "scripts": {
     "generate-manual": "marked-man --version $npm_package_version --manual \"Node Task List\" README.md > man/man1/ntl.1",
@@ -59,29 +64,31 @@
     "menu"
   ],
   "dependencies": {
-    "ipt": "^3.1.1",
+    "esmock": "^2.6.5",
+    "ipt": "^3.2.0",
     "lru-cache-fs": "^2.0.1",
-    "read-pkg": "^5.2.0",
-    "simple-output": "^2.1.1",
-    "yargs": "^15.3.1"
+    "read-pkg": "^9.0.1",
+    "simple-output": "^3.0.0",
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "coveralls": "^3.1.0",
-    "cross-env": "^7.0.2",
+    "coveralls": "^3.1.1",
+    "cross-env": "^7.0.3",
     "cross-spawn": "^7.0.3",
-    "eslint": "^7.3.1",
-    "eslint-config-prettier": "^6.7.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^8.10.0",
     "markdown-toc": "^1.2.0",
-    "marked": "^0.7.0",
-    "marked-man": "^0.7.0",
-    "minipass": "^3.1.3",
-    "prettier": "^2.0.5",
-    "require-inject": "^1.4.4",
-    "tap": "^14.10.7"
+    "marked": "^12.0.2",
+    "marked-man": "^2.1.0",
+    "minipass": "^7.1.1",
+    "prettier": "^3.2.5",
+    "tap": "^19.0.0"
   },
   "tap": {
-    "100": true,
-    "test-ignore": "test/integration/helpers.js|test/unit/helpers.js"
+    "exclude": [
+      "test/integration/helpers.js",
+      "test/unit/helpers.js"
+    ]
   },
   "ntl": {
     "descriptions": {
@@ -91,5 +98,6 @@
       "test": "Run all tests"
     }
   },
-  "license": "MIT"
+  "license": "MIT",
+  "type": "module"
 }
